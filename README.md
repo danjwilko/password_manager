@@ -1,15 +1,35 @@
-# Password Manager
+# 🔐 Password Manager (WIP)
 
-A secure password manager application.
+A simple password manager built with **Django**.  
+This project aims to demonstrate:  
+- Secure user authentication  
+- Encrypted password storage using `cryptography.fernet`  
+- Clean, user-friendly UI for managing stored credentials  
 
-## Setup
+---
 
-This project uses a Python virtual environment. To activate it:
+## 🚧 Status
+🟡 **In development** — currently setting up project structure.  
+Future commits will include models, encryption integration, and basic CRUD functionality.  
 
-```bash
-source pm_env/bin/activate
-```
+---
 
-## Description
+## 📦 Tech Stack
+- Python / Django  
+- SQLite (development database)  
+- `cryptography.fernet` for encryption  
 
-This is a password manager project built with Django.
+---
+
+## 📌 Roadmap
+- [ ] User registration & login  
+- [ ] Store & retrieve encrypted passwords  
+- [ ] Dashboard UI for managing credentials  
+- [ ] Per-user encryption keys  
+- [ ] Deployment (PythonAnywhere / Heroku / Docker)  
+
+---
+
+## 📖 Notes
+This is an **educational project** intended to practice Django and security concepts.  
+Not recommended for production use.  
