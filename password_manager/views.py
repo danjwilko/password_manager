@@ -56,4 +56,37 @@ def view_credential(request, credential_id):
                'decrypted_password': decrypted_password}
     return render(request, 'password_manager/view_credential.html', context)
 
+def edit_credential(request, credential_id):
+    """Edit an existing credential"""
+    credential = Credentials.objects.get(id=credential_id)
+    check_credential_owner(credential, request)  # Ensure user owns this credential
+
+    if request.method != "POST":
+        # No data submitted; create a form pre-filled with the current credential.
+        form = CredentialForm(instance=credential)
+    else:
+        # POST data submitted; process data.
+        form = CredentialForm(instance=credential, data=request.POST)
+        if form.is_valid():
+            edited_credential = form.save(commit=False)
+            edited_credential.password_encrypted = encrypt_password(request, form.cleaned_data['password'])
+            edited_credential.save()
+            return redirect('password_manager:view_credential', credential_id=credential.id)
+
+    # Display a blank or invalid form.
+    context = {'form': form, 'credential': credential}
+    return render(request, 'password_manager/edit_credential.html', context)
+
+def delete_credential(request, credential_id):
+    """Delete an existing credential"""
+    credential = Credentials.objects.get(id=credential_id)
+    check_credential_owner(credential, request)  # Ensure user owns this credential
+
+    if request.method == "POST":
+        credential.delete()
+        return redirect('password_manager:credential')
+
+    # Display a confirmation page
+    context = {'credential': credential}
+    return render(request, 'password_manager/delete_credential.html', context)
 
