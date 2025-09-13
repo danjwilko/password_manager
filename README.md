@@ -1,35 +1,39 @@
-# 🔐 Password Manager (WIP)
+# Password Manager
 
-A simple password manager built with **Django**.  
-This project aims to demonstrate:  
-- Secure user authentication  
-- Encrypted password storage using `cryptography.fernet`  
-- Clean, user-friendly UI for managing stored credentials  
+A secure password manager built with **Django** featuring per-user encryption and Argon2id key derivation.
 
----
+## Features
+- Secure user authentication with custom login/registration
+- Encrypted password storage using Fernet symmetric encryption
+- Per-user encryption keys derived from passwords using Argon2id
+- Session-based key management for credential access
+- Individual credential viewing with real-time decryption
 
-## 🚧 Status
-🟡 **In development** — currently setting up project structure.  
-Future commits will include models, encryption integration, and basic CRUD functionality.  
+## Status
+**Core functionality complete** — users can securely store and retrieve encrypted passwords.
 
----
+## Tech Stack
+- Python 3.13 / Django 5.2.5
+- SQLite (development database)
+- cryptography library (Fernet + Argon2id)
+- Custom UserProfile model for salt storage
 
-## 📦 Tech Stack
-- Python / Django  
-- SQLite (development database)  
-- `cryptography.fernet` for encryption  
+## Security Architecture
+- **Key Derivation**: Argon2id with per-user salts
+- **Encryption**: Fernet symmetric encryption for password storage
+- **Session Management**: Base64-encoded keys stored in Django sessions
+- **User Isolation**: All credentials filtered by authenticated user
 
----
+## Roadmap
+- [x] User registration & login
+- [x] Store & retrieve encrypted passwords
+- [x] Per-user encryption keys
+- [x] Individual credential viewing
+- [ ] Edit/delete credential functionality
+- [ ] Password visibility toggles
+- [ ] UI styling and responsive design
+- [ ] Deployment configuration
 
-## 📌 Roadmap
-- [ ] User registration & login  
-- [ ] Store & retrieve encrypted passwords  
-- [ ] Dashboard UI for managing credentials  
-- [ ] Per-user encryption keys  
-- [ ] Deployment (PythonAnywhere / Heroku / Docker)  
-
----
-
-## 📖 Notes
-This is an **educational project** intended to practice Django and security concepts.  
-Not recommended for production use.  
+## Notes
+This is an **educational project** demonstrating Django security patterns and cryptographic best practices.
+Not intended for production use without additional security hardening.  
