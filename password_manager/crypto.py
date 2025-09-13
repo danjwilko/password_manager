@@ -1,4 +1,5 @@
 from cryptography.hazmat.primitives.kdf.argon2 import Argon2id
+from cryptography.fernet import Fernet
 from accounts.models import UserProfile
 import base64    
 import os
@@ -25,14 +26,14 @@ def derive_key_from_password(password: str, salt: bytes) -> bytes:
 
 def set_user_key(request, user, password: str):
     user_profile, created = UserProfile.objects.get_or_create(user=user)
-    
     key, salt = create_user_key(password)
     user_profile.encryption_salt = salt
     user_profile.save()
     # Store the key in a secure place, e.g., session or cache
     key_string = base64 .b64encode(key).decode('utf-8')
+    print(key_string)
     request.session['encryption_key'] = key_string
-    
+
 def get_user_key(request, user, password: str):
     try:
         user_profile = UserProfile.objects.get(user=user)
@@ -43,4 +44,21 @@ def get_user_key(request, user, password: str):
     key = derive_key_from_password(password, user_profile.encryption_salt)
     key_string = base64.b64encode(key).decode('utf-8')
     request.session['encryption_key'] = key_string
-    return key
+    return key_string
+
+def decrypt_password(request, encrypted_password: str) -> str:
+    key_string = request.session.get('encryption_key')
+    if not key_string:
+        raise ValueError("Encryption key not found in session.")
+    print(f"DEBUG: decoded key length: {len(key_string)}")
+    fernet = Fernet(key_string)
+    decrypted = fernet.decrypt(encrypted_password.encode()).decode()
+    return decrypted
+
+def encrypt_password (request, password: str) -> str:
+    key_string = request.session.get('encryption_key')
+    if not key_string:
+        raise ValueError("Encryption key not found in session.")
+    fernet = Fernet(key_string)
+    encrypted = fernet.encrypt(password.encode())
+    return encrypted.decode()

@@ -20,10 +20,3 @@ class Credentials(models.Model):
         self.site_name = site_name
         
 
-    def set_password(self, password: str):
-        from .crypto import encrypt_password
-        self.password_encrypted = encrypt_password(password)
-
-    def get_password(self) -> str:
-        from .crypto import decrypt_password
-        return decrypt_password(self.password_encrypted)

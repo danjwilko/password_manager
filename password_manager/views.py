@@ -1,10 +1,16 @@
-from urllib import request
+from django.http import Http404
 from django.shortcuts import render, redirect
 
 from django.contrib.auth.decorators import login_required
 from .models import Credentials
 from .forms import CredentialForm
+from password_manager.crypto import decrypt_password
+from password_manager.crypto import encrypt_password
 
+def check_credential_owner(credential, request):
+    """Check if the current user owns the given credential"""
+    if credential.user != request.user:
+        raise Http404
 
 # Create your views here.
 @login_required
@@ -31,6 +37,7 @@ def new_credential(request):
         if form.is_valid():
             new_credential = form.save(commit=False)
             new_credential.user = request.user
+            new_credential.password_encrypted = encrypt_password(request, form.cleaned_data['password'])
             new_credential.save()
             return redirect('password_manager:credential')
 
@@ -42,5 +49,11 @@ def new_credential(request):
 def view_credential(request, credential_id):
     """View a single credential in detail"""
     credential = Credentials.objects.get(id=credential_id)
-    context = {'credential': credential}
+    check_credential_owner(credential, request)  # Ensure user owns this credential
+    
+    decrypted_password = decrypt_password(request, credential.password_encrypted)
+    context = {'credential': credential,
+               'decrypted_password': decrypted_password}
     return render(request, 'password_manager/view_credential.html', context)
+
+
