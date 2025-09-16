@@ -29,8 +29,8 @@ A secure password manager built with **Django** featuring per-user encryption an
 - [x] Store & retrieve encrypted passwords
 - [x] Per-user encryption keys
 - [x] Individual credential viewing
-- [ ] Edit/delete credential functionality
-- [ ] Password visibility toggles
+- [x] Edit/delete credential functionality
+- [x] Password visibility toggles
 - [ ] UI styling and responsive design
 - [ ] Deployment configuration
 
