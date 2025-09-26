@@ -1,16 +1,12 @@
 from django.http import Http404
-from django.shortcuts import render, redirect
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Credentials
 from .forms import CredentialForm
 from password_manager.crypto import decrypt_password
 from password_manager.crypto import encrypt_password
 
-def check_credential_owner(credential, request):
-    """Check if the current user owns the given credential"""
-    if credential.user != request.user:
-        raise Http404
 
 # Create your views here.
 @login_required
@@ -48,26 +44,36 @@ def new_credential(request):
 @login_required
 def view_credential(request, credential_id):
     """View a single credential in detail"""
-    credential = Credentials.objects.get(id=credential_id)
-    check_credential_owner(credential, request)  # Ensure user owns this credential
-    
+    credential = get_object_or_404(Credentials, id=credential_id, user=request.user)
     decrypted_password = decrypt_password(request, credential.password_encrypted)
     context = {'credential': credential,
                'decrypted_password': decrypted_password}
     return render(request, 'password_manager/view_credential.html', context)
 
+@login_required
 def edit_credential(request, credential_id):
     """Edit an existing credential"""
-    credential = Credentials.objects.get(id=credential_id)
-    check_credential_owner(credential, request)  # Ensure user owns this credential
-
+    credential = get_object_or_404(Credentials, id=credential_id, user=request.user)
+    
     if request.method != "POST":
         # No data submitted; create a form pre-filled with the current credential.
-        form = CredentialForm(instance=credential)
+        try:
+            decrypted_password = decrypt_password(request, credential.password_encrypted)
+            initial_data = {
+                'site_name': credential.site_name,
+                'username': credential.username,
+                'password': decrypted_password
+            }
+            form = CredentialForm(initial=initial_data)
+        except Exception as e:
+            messages.error(request, "Error decrypting password. Please try logging in again.")
+            form = CredentialForm(instance=credential)
+        
     else:
-        # POST data submitted; process data.
+        # POST data submitted; process data
         form = CredentialForm(instance=credential, data=request.POST)
         if form.is_valid():
+            # update the credential
             edited_credential = form.save(commit=False)
             edited_credential.password_encrypted = encrypt_password(request, form.cleaned_data['password'])
             edited_credential.save()
@@ -77,10 +83,10 @@ def edit_credential(request, credential_id):
     context = {'form': form, 'credential': credential}
     return render(request, 'password_manager/edit_credential.html', context)
 
+@login_required
 def delete_credential(request, credential_id):
     """Delete an existing credential"""
-    credential = Credentials.objects.get(id=credential_id)
-    check_credential_owner(credential, request)  # Ensure user owns this credential
+    credential = get_object_or_404(Credentials, id=credential_id, user=request.user)
 
     if request.method == "POST":
         credential.delete()

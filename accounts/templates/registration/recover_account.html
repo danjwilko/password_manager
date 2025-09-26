@@ -1,0 +1,32 @@
+{% extends 'password_manager/base.html' %}
+
+{% block content %}
+    <h2>Account Recovery</h2>
+
+<p>We detected a problem with your encryption setup. Your account is missing essential security components needed to access any stored passwords.</p>
+
+<p><strong>What this means:</strong> If you have previously stored passwords, they cannot be decrypted without these missing components.</p>
+
+<p><strong>Your options:</strong></p>
+<ul>
+    <li>If you have a backup of your data, please restore it first.</li>
+    <li>If this is a new account or you don't mind losing stored passwords, you can reset your vault.</li>
+</ul>
+
+<div class="warning">
+    <p><strong>⚠️ Warning:</strong> Resetting your vault will permanently delete all stored passwords. This action cannot be undone.</p>
+</div>
+
+<p>To reset your vault, please re-authenticate to confirm your identity:</p>
+
+<!-- Form goes here -->
+<form method="POST" action="{% url 'accounts:wipe_and_reinit' %}">
+    {% csrf_token %}
+    {{ form.as_div }}
+    <div class="form-group">
+      <input type="checkbox" id="confirm_reset" name="confirm_reset" required>
+      <label for="confirm_reset">I understand all my passwords will be permanently deleted</label>
+    </div>
+    <button type="submit" class="btn btn-danger">Re-authenticate and Reset Vault</button>
+</form>
+{% endblock content %}
