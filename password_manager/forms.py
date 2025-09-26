@@ -7,7 +7,6 @@ class CredentialForm(forms.ModelForm):
     """Form for adding or editing credentials"""
     site_name = forms.CharField(
         max_length=255,
-        help_text="Website or service name",
         validators=[
             RegexValidator(
                 regex=r'^[a-zA-Z0-9\.\-\_\s]+$',
@@ -18,7 +17,6 @@ class CredentialForm(forms.ModelForm):
     
     username = forms.CharField(
         max_length=255,
-        help_text="Your username or email for this site"
     )
     
     password = forms.CharField(
@@ -27,15 +25,13 @@ class CredentialForm(forms.ModelForm):
             'id': 'password-input',
             'autocomplete': 'new-password',  # Prevent browser autofill
         }),
-        help_text="Use a strong, unique password for each site",
         required=False,
     )
     
     site_url = forms.CharField(
         max_length=2000,
         required=False,
-        help_text="Optional: Website URL (e.g. https://example.com)",
-        widget=forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://example.com'}),
+        widget=forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Optional: https://example.com'}),
         validators=[URLValidator(message="Enter a valid URL, including http:// or https://")]
     )
     

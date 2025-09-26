@@ -66,6 +66,11 @@ def custom_login(request):
     context = {'form': form}
     return render(request, 'registration/login.html', context)
 
+def forgotten_password(request):
+    """ Display forgotten password page """
+    context = {}
+    return render(request, 'registration/forgotten_password.html', context)
+
 def recover_account(request):
     if 'user_needs_recovery' not in request.session:
         return redirect('accounts:login')
