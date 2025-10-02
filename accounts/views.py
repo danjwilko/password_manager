@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, get_user_model
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from .forms import SecureUserCreationForm
 from password_manager.crypto import set_user_key, get_user_key
-from password_manager .models import Credentials
+from password_manager.models import Credentials
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from accounts.utils import ensure_profile_and_salt_for_login
 from accounts.models import UserProfile
 from django.db import transaction
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
 import os
 
 def register(request):
@@ -39,7 +41,6 @@ def register(request):
     return render(request, 'registration/register.html', context)
 
 def custom_login(request):
-    print("Custom login view called")
     """ Log in an existing user """
     if request.method != 'POST':
         # Display blank login form
@@ -68,21 +69,60 @@ def custom_login(request):
 
 def forgotten_password(request):
     """ Display forgotten password page """
-    context = {}
-    return render(request, 'registration/forgotten_password.html', context)
+    if request.method != "POST":
+        form = PasswordResetForm()
+    else:
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            request.session['recovery_initiated'] = 'password_reset'
+            form.save(
+                request=request,
+                use_https=request.is_secure(),
+                email_template_name='registration/custom_password_reset_email.html',
+            )
+    return render(request, 'registration/forgotten_password.html', {'form': form})
 
-def recover_account(request):
+def recover_account(request, uidb64=None, token=None):
+    """ Handle account recovery process """
+    user = None
+    if uidb64 is not None and token is not None:
+        try:
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = get_user_model().objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
+            user = None
+        if user is not None and default_token_generator.check_token(user, token):
+            request.session['user_needs_recovery'] = user.pk
+            # Check if this was initiated as a password reset
+            if request.session.get('recovery_initiated') == 'password_reset':
+                request.session['recovery_reason'] = 'password_reset'
+                # Clean up the temporary flag
+                request.session.pop('recovery_initiated', None)
+            else:
+                request.session['recovery_reason'] = 'encryption_issue'
+            messages.info(request, "Please confirm your identity to recover your account.")
+            return redirect('accounts:recover_account')
+        else:
+            messages.error(request, "The recovery link is invalid or has expired.")
+            return redirect('accounts:login')
     if 'user_needs_recovery' not in request.session:
         return redirect('accounts:login')
     else:
         user_id = request.session['user_needs_recovery']
-        context = {'form': AuthenticationForm()}
+        # If recovery_reason isn't set yet, default to encryption_issue
+        if 'recovery_reason' not in request.session:
+            request.session['recovery_reason'] = 'encryption_issue'
+        recovery_reason = request.session.get('recovery_reason')
+        context = {'form': AuthenticationForm(),
+                   'is_password_reset': recovery_reason == 'password_reset',
+                   'recovery_reason': recovery_reason}
         return render(request, 'registration/recover_account.html', context)
 
 User = get_user_model()
 
 @require_POST
 def wipe_and_reinit(request):
+    """ Wipe all credentials and reinitialize account with new salt and key """
     # Ensure this is a POST request to prevent CSRF
     username = request.POST.get('username')
     password = request.POST.get('password')
@@ -122,6 +162,7 @@ def wipe_and_reinit(request):
             try:
                 get_user_key(request, user, password)
             except Exception:
+                messages.error(request, "Failed to derive encryption key. Please try again.")
                 set_user_key(request, user, password)
                 
     # If any error occurs, rollback and inform user
@@ -130,7 +171,9 @@ def wipe_and_reinit(request):
         return redirect('accounts:recover_account')
 
     # Successful recovery
+    # Clean up session flags
     request.session.pop('user_needs_recovery', None)
+    request.session.pop('recovery_reason', None)  
     login(request, user)
     request.session.set_expiry(300)  # Session expires in 5 minutes of inactivity
     messages.success(request, "Account recovery successful. Please re-add your credentials.")

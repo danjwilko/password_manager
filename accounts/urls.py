@@ -14,9 +14,12 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     # Password reset request page.
     path('forgotten_password/', views.forgotten_password, name='forgotten_password'),
-     # Account recovery page.
-    path('recover_account/', views.recover_account, name='recover_account'),
+     # Account recovery page.   
+     path('recover_account/', views.recover_account, name='recover_account'),
+     # Account recovery with uid and token.
+    path('recover_account/<uidb64>/<token>/', views.recover_account, name='recover_account'),
     # Endpoint to wipe and reinitialize account (POST only).
     path('wipe_and_reinit/', views.wipe_and_reinit, name='wipe_and_reinit')
+    
   
 ]

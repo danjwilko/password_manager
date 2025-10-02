@@ -44,28 +44,40 @@
                     <a class="nav-link"  href="{% url 'accounts:login' %}">Log in</a>
                 </li>
                 {% endif %}
-            <ul>
+            </ul>
                 <!--Logout link added-->
                 {% if user.is_authenticated %}
-                    <form action="{% url 'accounts:logout' %}" method='post'>
-                        {% csrf_token %}
-                        <button name="submit" class="btn btn-outline-secondary btn-sm">
-                        Log out</button>
-                    </form>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <form action="{% url 'accounts:logout' %}" method='post'>
+                            {% csrf_token %}
+                            <button name="submit" class="btn btn-outline-secondary btn-sm">
+                            Log out</button>
+                        </form>
+                    </a>
+                </li>
                 {% endif %}
     </div>
 </div>
 
 </nav>
-<main class="container">
-    <div class="pb-2 mb-2 border-bottom">
-        {% block page_header %}
-            <h2 class="h2">Password Manager</h2>
-        {% endblock page_header %}
+<div class="container flex-container d-flex flex-column min-vh-100">
+    <main class="flex-grow-1">
+        <div class="pb-2 mb-2 border-bottom">
+            {% block page_header %}
+                <h2 class="h2">Password Manager</h2>
+            {% endblock page_header %}
+        </div>
+        <div>
+            {% block content %} {% endblock content %}
+        </div>    
+    </main>
+<footer class="mt-auto py-3">
+    <div class="footer">
+        <span class="text-muted">© 2025 Password Manager - Daniel Wilkinson</span>
     </div>
-    <div>
-        {% block content %} {% endblock content %}
-    </div>    
-</main>
+</footer>
+</div>
 </body>
+
 </html>
