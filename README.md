@@ -36,5 +36,7 @@ A secure password manager built with Django featuring per-user encryption and Ar
 - [ ] Deployment configuration
 
 ## Notes
-This is an **educational project** demonstrating Django security patterns and cryptographic best practices.
+This is an educational project demonstrating Django security patterns and cryptographic best practices.
 Not intended for production use without additional security hardening, styling tweaks and testing.
+
+I'm still learning as I continue to build and develop these projects in-between Uni study, so certain elements may be incomplete or not be implemented in the most optimal fashion. I am fully open to feedback and pointers so please comment and let me know your thoughts, observations or critique. 
