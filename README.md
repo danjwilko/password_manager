@@ -1,6 +1,6 @@
 # Password Manager
 
-A secure password manager built with **Django** featuring per-user encryption and Argon2id key derivation.
+A secure password manager built with Django featuring per-user encryption and Argon2id key derivation.
 
 ## Features
 - Secure user authentication with custom login/registration
@@ -10,13 +10,13 @@ A secure password manager built with **Django** featuring per-user encryption an
 - Individual credential viewing with real-time decryption
 
 ## Status
-**Core functionality complete** — users can securely store and retrieve encrypted passwords.
+**Core functionality complete** - users can securely store and retrieve encrypted passwords.
+**Account recovery functionality complete** - users can reset their account if they lose their password or in the event of encryption issues.
 
 ## Tech Stack
 - Python 3.13 / Django 5.2.5
 - SQLite (development database)
 - cryptography library (Fernet + Argon2id)
-- Custom UserProfile model for salt storage
 
 ## Security Architecture
 - **Key Derivation**: Argon2id with per-user salts
@@ -36,4 +36,4 @@ A secure password manager built with **Django** featuring per-user encryption an
 
 ## Notes
 This is an **educational project** demonstrating Django security patterns and cryptographic best practices.
-Not intended for production use without additional security hardening.  
+Not intended for production use without additional security hardening, styling tweaks and testing.
