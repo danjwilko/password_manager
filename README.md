@@ -1,4 +1,4 @@
-# Password Manager
+# Password Manager - Stenvard
 
 A secure password manager built with Django featuring per-user encryption and Argon2id key derivation.
 
