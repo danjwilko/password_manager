@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Manager</title>
+    <title>Stenvard</title>
 
     {% load django_bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
 
+    <style>
+        body {
+            background-color: teal;
+        }
+    </style>
 </head>
 <body>    
     <!--Navbar-->
-
     <nav class="navbar navbar-dark bg-dark navbar-expand-lg mb-4 ">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'password_manager:index' %}">Password Manager</a>
+        <div class="container-fluid w-75">
+            <a class="navbar-brand" href="{% url 'password_manager:index' %}">Stenvard</a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
             data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" 
@@ -55,24 +59,24 @@
                             Log out</button>
                         </form>
                     </a>
-                </li>
+                </li>   
                 {% endif %}
     </div>
 </div>
 
 </nav>
-<div class="container flex-container d-flex flex-column min-vh-100">
+<div class="container flex-container d-flex flex-column">
     <main class="flex-grow-1">
-        <div class="pb-2 mb-2 border-bottom">
+        <div class="pb-2 mb-2">
             {% block page_header %}
-                <h2 class="h2">Password Manager</h2>
             {% endblock page_header %}
         </div>
         <div>
             {% block content %} {% endblock content %}
         </div>    
     </main>
-<footer class="mt-auto py-3">
+</div>
+<footer class="mt-auto py-3 text-center">
     <div class="footer">
         <span class="text-muted">© 2025 Password Manager - Daniel Wilkinson</span>
     </div>

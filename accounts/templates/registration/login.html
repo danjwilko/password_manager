@@ -1,21 +1,68 @@
-{% extends 'password_manager/base.html' %}
-{% load django_bootstrap5 %}
+{% extends 'password_manager/base.html' %} 
+{% load django_bootstrap5 %} 
 
 {% block page_header %}
-    <h2 class="h2">Login</h2>
-{% endblock page_header %}
+<h2 class="display-3 text-light text-center">Welcome to Stenvard</h2>
+<h4 class="text-light text-center text-decoration-underline"> Your secure password manager.</h4>
+{% endblock page_header %} 
 
 {% block content %}
-    {% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
-    {% endif %}
 
-    <form action="{% url 'accounts:login' %}" method='post'>
-        {% csrf_token %}
-        {% bootstrap_form form %}
-        {% bootstrap_button button_type="submit" content="Log in" %}
-        
-    </form>
-    <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
-    <p><a href="{% url 'accounts:forgotten_password' %}">Forgot your password?</a></p>
+<div class="container align-content-center">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h3 class="card-title mb-3">Log in to your account</h3>
+          <p class="card-text text-muted">
+            Please enter your username and password to log in.
+          </p>
+        </div>
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong>Login failed:</strong> Please check your username and password and try again.
+        </div>
+        {% endif %}
+        <div class="px-4 pb-4">
+        <form action="{% url 'accounts:login' %}" method="post">
+            {% csrf_token %} 
+            {% bootstrap_form form %} 
+            {% bootstrap_button button_type="submit" content="Log in" %}
+          </form>
+        </div>
+      </div>
+      <div class="text-center">
+      <button type="button" class="btn btn-primary text-center mb-2 mt-3" onclick="location.href='{% url 'accounts:register' %}'">
+        Don't have an account?
+        Register here
+      </button>
+        </div>
+      <div class="text-center">
+      <button type="button" class="btn btn-warning text-center mb-2 mt-3" onclick="location.href='{% url 'accounts:forgotten_password' %}' ">
+        Forgot your password?
+      </button>
+    </div>
+    </div>
+
+    <div class="col-lg-6 col-md-4 col-sm-12">
+        <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <div class="card-description">
+            <p class="card-text">
+                <strong>Bank-grade security:</strong> Your passwords are protected with AES-128 encryption.
+            </p>
+            <p class="card-text">
+                <strong>Complete privacy:</strong> Zero-knowledge architecture ensures only you can access your data. We couldnt access it even if we wanted to.
+            </p>
+            <p class="card-text">
+                <strong>Simple management:</strong> Secure password storage with an intuitive, user-friendly interface.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock content %}

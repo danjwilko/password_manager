@@ -1,12 +1,29 @@
 {% extends 'password_manager/base.html' %}
 
 {% block content %}
-    <div class="p-3 mb-4 bg-light border rounded-3">
-        <div class="container-fluid py-4">
-            <h1 class="display-3">Store your credentials</h1>
-            <p class="lead">Store your passwords securely and access them anytime.</p>
-            <a class="btn btn-primary btn-lg mt-1"
+    <h3 class="display-2 text-center mb-4"> Stenvard</h3>
+    <h4 class="w-75 mx-auto text-light text-center mb-4">Welcome to Stenvard, a secure password manager, where you can securely store and manage your passwords with ease.</h4>
+    <div class="row d-flex justify-content-center align-content-center mb-4">
+    <a class="btn btn-primary btn-md col-3"
             href="{% url 'password_manager:credential' %}"> View Your Credentials</a>
+    <a class="btn btn-outline-primary btn-md col-3 text-light"
+        href="{% url 'password_manager:new_credential' %}"> Add New Credential</a>
+    </div>
+
+        <div class="container row d-flex justify-content-center">
+            <div class="p-3 mb-4 bg-light border rounded-3 col-3 m-3">
+            <p class="lead">Advanced Cryptography:
+            <p>Using Argon2id key derivation with Fernet encryption - Your credentials are securely encrypted and protected.</p>
+            </div>
+            <div class="p-3 mb-4 bg-light border rounded-3 col-3 m-3">
+            <p class="lead">Zero-Knowledge Design: 
+            <p>Your credentials are encrypted locally - only you hold the keys to decrypt them. We couldn't access them even if we wanted to.</p>
+            </div>
+            <div class="p-3 mb-4 bg-light border rounded-3 col-3 m-3">
+            <p class="lead">Built for Privacy: 
+                <p>Per-user encryption ensures complete data privacy and maximum security.</p>
+            </div>
+            </div>
         </div>
     </div>
 
