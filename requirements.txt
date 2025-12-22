@@ -1,0 +1,8 @@
+asgiref==3.11.0
+cffi==2.0.0
+cryptography==46.0.3
+Django==6.0
+django-bootstrap5==25.3
+pycparser==2.23
+python-dotenv==1.2.1
+sqlparse==0.5.5
