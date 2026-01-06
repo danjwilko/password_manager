@@ -17,7 +17,7 @@ urlpatterns = [
      # Account recovery page.   
      path('recover_account/', views.recover_account, name='recover_account'),
      # Account recovery with uid and token.
-    path('recover_account/<uidb64>/<token>/', views.recover_account, name='recover_account'),
+    path('recover_account_confirm/<uidb64>/<token>/', views.recover_account_confirm, name='recover_account_confirm'),
     # Endpoint to wipe and reinitialize account (POST only).
     path('wipe_and_reinit/', views.wipe_and_reinit, name='wipe_and_reinit')
     

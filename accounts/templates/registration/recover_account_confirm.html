@@ -1,0 +1,21 @@
+{% extends "password_manager/base.html" %}
+{% load django_bootstrap5 %}
+{% block page_header %}
+    <h2 class="h2">Forgotten Password Account Recovery</h2>
+{% endblock page_header %}
+{% block content %}
+    <div class="container bg-light mb-2 p-4 rounded-1 shadow-sm">
+    <div class="alert alert-warning" role="alert">
+        <p><strong>⚠️ Warning:</strong> You have requested to recover your account. This process will reset your vault and permanently delete all stored passwords. This action cannot be undone.</p>
+    </div>
+    <form method="POST" action="{% url 'accounts:wipe_and_reinit' %}">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <div class="form-group m-1">
+          <input type="checkbox" id="confirm_reset" name="confirm_reset" required>
+          <label for="confirm_reset">I understand all my passwords will be permanently deleted</label>
+        </div>
+        <button type="submit" class="btn btn-danger m-1 ">Reset Vault</button>
+        <button type="button" class="btn btn-warning m-1" onclick="location.href='{% url 'accounts:login' %}'">Cancel</button>
+    </form>
+{% endblock content %}
