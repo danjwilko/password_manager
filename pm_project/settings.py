@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     # My apps
     'password_manager',
     'accounts',
+    'vault_lab',
+    
     
     # Third-party apps
     'django_bootstrap5',

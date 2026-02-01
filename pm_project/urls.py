@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),  # Include URLs from the accounts app
     path('', include('password_manager.urls')),  # Include URLs from the password_manager app
-    
+    path("vault-lab/", include("vault_lab.urls"))
+
     
 ]
