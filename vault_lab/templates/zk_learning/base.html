@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stenvard</title>
+
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <style>
+        body {
+            background-color: teal;
+        }
+    </style>
+</head>
+<body>    
+    <!--Navbar-->
+    <nav class="navbar navbar-dark bg-dark navbar-expand-lg mb-4 ">
+        <div class="container-fluid w-75">
+            <a class="navbar-brand" href="{% url 'password_manager:index' %}">Stenvard</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+            data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" 
+            aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'password_manager:credential' %}">Credentials</a>
+                </li>
+            </ul>
+            <!-- Account related links-->
+            
+            <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <span class="navbar-text me-2">Hello , {{ user.username }}.</span>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accounts:register' %}">Register</a> -
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"  href="{% url 'accounts:login' %}">Log in</a>
+                </li>
+                {% endif %}
+            </ul>
+                <!--Logout link added-->
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <form action="{% url 'accounts:logout' %}" method='post'>
+                            {% csrf_token %}
+                            <button name="submit" class="btn btn-outline-secondary btn-sm">
+                            Log out</button>
+                        </form>
+                    </a>
+                </li>   
+                {% endif %}
+    </div>
+</div>
+
+</nav>
+<div class="container flex-container d-flex flex-column">
+    <main class="flex-grow-1">
+        <div class="pb-2 mb-2">
+            {% block page_header %}
+            {% endblock page_header %}
+        </div>
+        <div>
+            {% block content %} {% endblock content %}
+        </div>    
+    </main>
+</div>
+<footer class="mt-auto py-3 text-center">
+    <div class="footer">
+        <span class="text-muted">© 2025 Password Manager - Daniel Wilkinson</span>
+    </div>
+</footer>
+</div>
+</body>
+
+</html>

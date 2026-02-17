@@ -27,8 +27,7 @@ def new_credential(request):
     if request.method != "POST":
         # No Data submitted; create a blank form.
         form = CredentialForm()
-    else:       
-        # POST data submitted; process data.
+    else:               
         form = CredentialForm(data=request.POST)
         if form.is_valid():
             new_credential = form.save(commit=False)
