@@ -12,7 +12,7 @@ A secure password manager built with Django featuring per-user encryption and Ar
 ## Status
 **Core functionality complete** - users can securely store and retrieve encrypted passwords.
 
-**Account recovery functionality** - complete** - users can reset their account if they lose their password or in the event of encryption issues.
+**Account recovery functionality** - **complete** - users can reset their account if they lose their password or in the event of encryption issues.
 
 ## Tech Stack
 - Python 3.13 / Django 5.2.5
@@ -26,12 +26,16 @@ A secure password manager built with Django featuring per-user encryption and Ar
 - **User Isolation**: All credentials filtered by authenticated user
 
 ## Roadmap
+**Completed**
 - [x] User registration & login
 - [x] Store & retrieve encrypted passwords
 - [x] Per-user encryption keys
 - [x] Individual credential viewing
 - [x] Edit/delete credential functionality
 - [x] Password visibility toggles
+
+**Planned or In Progress**
+- [ ] Explore zero knowledge KEK/DEK design and implementation
 - [ ] UI styling and responsive design
 - [ ] Deployment configuration
 
