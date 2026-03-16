@@ -1,4 +1,3 @@
-from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -64,7 +63,7 @@ def edit_credential(request, credential_id):
                 'password': decrypted_password
             }
             form = CredentialForm(initial=initial_data)
-        except Exception as e:
+        except Exception:
             messages.error(request, "Error decrypting password. Please try logging in again.")
             form = CredentialForm(instance=credential)
         

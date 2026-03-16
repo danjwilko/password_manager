@@ -112,6 +112,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    'OPTIONS': {
+        'min_length': 12,
+    },
+    },
 ]
 
 
@@ -141,4 +147,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'password_manager:index'
 LOGOUT_REDIRECT_URL = 'password_manager:index'
 LOGIN_URL = 'accounts:login'
+PASSWORD_RESET_TIMEOUT = 900 # 15 minutes
 
