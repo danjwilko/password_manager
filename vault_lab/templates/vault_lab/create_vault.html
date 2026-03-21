@@ -1,0 +1,42 @@
+{% extends "password_manager/base.html" %}
+{% load django_bootstrap5 %}
+{% block page_header %}
+    <h2 class="h2"> Vault Creation<h2>
+<hr>
+{% endblock page_header %}
+
+{% block content %}
+<div class="container">
+    div class="row justify-content-center">
+        <div class="col-sm-12 col-md-10 col-lg-8">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="alert-info" role="alert">
+                        <strong>Info:</strong>This password will be used to encrypt your vault. It cannot be recovered.
+                    </div>
+                    <hr class="mb-4">
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label">Master Password</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirm_password" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Create Vault
+        </button>
+    </form>
+
+    {% if error %}
+        <div class="alert alert-danger mt-3">
+            {{ error }}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

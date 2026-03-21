@@ -3,7 +3,7 @@ import re
 from django import forms
 from django.core.validators import RegexValidator, URLValidator
 
-from .models import Credentials
+from .models import Credential
 
 
 class CredentialForm(forms.ModelForm):
@@ -49,7 +49,7 @@ class CredentialForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Credentials
+        model = Credential
         fields = ["site_name", "username", "password", "site_url"]
 
     def clean_password(self):

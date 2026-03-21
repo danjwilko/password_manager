@@ -1,0 +1,37 @@
+{% extends "password_manager/base.html" %}
+{% load django_bootstrap5 %}
+{% block page_header %}
+    <h2 class="h2"> Unlock Vault<h2>
+<hr>
+{% endblock page_header %}
+
+{% block content %}
+<div class="container">
+    div class="row justify-content-center">
+        <div class="col-sm-12 col-md-10 col-lg-8">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="alert-info" role="alert">
+                        <strong>Info:</strong>Please enter your master password to unlock vault.
+                    </div>
+                    <hr class="mb-4">
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label">Master Password</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Unlock Vault
+        </button>
+    </form>
+
+    {% if error %}
+        <div class="alert alert-danger mt-3">
+            {{ error }}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

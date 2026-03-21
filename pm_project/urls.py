@@ -24,5 +24,6 @@ urlpatterns = [
     path(
         "", include("password_manager.urls")
     ),  # Include URLs from the password_manager app
-    path("vault-lab/", include("vault_lab.urls")),
+    path("vault/", include("vault_lab.urls")),
+    
 ]

@@ -2,62 +2,93 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
-from password_manager.crypto import decrypt_password, encrypt_password
-
+from vault_lab.crypto import decrypt_password, encrypt_password
 from .forms import CredentialForm
-from .models import Credentials
+from .models import Credential, Vault
 
+def decrypt(self, dek):
+    from vault_lab.crypto import decrypt_password
+    return decrypt_password(self.encrypted_password, dek)
 
 # Create your views here.
 @login_required
 def index(request):
     """The home page for password manager"""
-    return render(request, "password_manager/index.html")
+    has_vault = False
+    vault_unlocked = False
 
+    if request.user.is_authenticated:
+        has_vault = Vault.objects.filter(user=request.user).exists()
+        vault_unlocked = "dek" in request.session
 
-@login_required
-def credential(request):
-    """Show all sites with stored credentials"""
-    credentials = Credentials.objects.filter(user=request.user).order_by("site_name")
-    context = {"credentials": credentials}
-    return render(request, "password_manager/credentials.html", context)
-
+    return render(request, "password_manager/index.html", {
+        "has_vault": has_vault,
+        "vault_unlocked": vault_unlocked
+    })
 
 @login_required
 def new_credential(request):
-    """Add a new credential"""
-    if request.method != "POST":
-        # No Data submitted; create a blank form.
-        form = CredentialForm()
-    else:
-        form = CredentialForm(data=request.POST)
+    dek = request.session.get("dek")
+
+    if not dek:
+        return redirect("unlock_vault")
+
+    dek = bytes.fromhex(dek)
+    vault = request.user.vault
+
+    if request.method == "POST":
+        form = CredentialForm(request.POST)
         if form.is_valid():
-            new_credential = form.save(commit=False)
-            new_credential.user = request.user
-            new_credential.password_encrypted = encrypt_password(
-                request, form.cleaned_data["password"]
-            )
-            new_credential.save()
-            return redirect("password_manager:credential")
+            credential = form.save(commit=False)
 
-    # Display a blank or invalid form.
-    context = {"form": form}
-    return render(request, "password_manager/new_credential.html", context)
+            credential.vault = vault
+            credential.username_encrypted = encrypt_password(form.cleaned_data["username"], dek)
+            credential.password_encrypted = encrypt_password(form.cleaned_data["password"], dek)
 
+            credential.save()
+            return redirect("credential")
+
+    else:
+        form = CredentialForm()
+
+    return render(request, "password_manager/new_credential.html", {"form": form})
+
+@login_required
+def credential(request):
+    dek = request.session.get("dek")
+
+    if not dek:
+        return redirect("unlock_vault")  # force unlock first
+
+    dek = bytes.fromhex(dek)
+
+    vault = request.user.vault
+    credentials = Credential.objects.filter(vault=vault)
+
+    decrypted_credentials = []
+    for cred in credentials:
+        decrypted_credentials.append({
+            "site_name": cred.site_name,
+            "username": decrypt_password(cred.username_encrypted, dek),
+            "password": decrypt_password(cred.password_encrypted, dek),
+        })
+
+    return render(request, "password_manager/credentials.html", {
+        "credentials": decrypted_credentials
+    })
 
 @login_required
 def view_credential(request, credential_id):
     """View a single credential in detail"""
-    credential = get_object_or_404(Credentials, id=credential_id, user=request.user)
+    credential = get_object_or_404(Credential, id=credential_id, vault=request.user.vault)
     decrypted_password = decrypt_password(request, credential.password_encrypted)
     context = {"credential": credential, "decrypted_password": decrypted_password}
     return render(request, "password_manager/view_credential.html", context)
 
-
 @login_required
 def edit_credential(request, credential_id):
     """Edit an existing credential"""
-    credential = get_object_or_404(Credentials, id=credential_id, user=request.user)
+    credential = get_object_or_404(Credential, id=credential_id, vault=request.user.vault)
 
     if request.method != "POST":
         # No data submitted; create a form pre-filled with the current credential.
@@ -99,7 +130,7 @@ def edit_credential(request, credential_id):
 @login_required
 def delete_credential(request, credential_id):
     """Delete an existing credential"""
-    credential = get_object_or_404(Credentials, id=credential_id, user=request.user)
+    credential = get_object_or_404(Credential, id=credential_id, user=request.user)
 
     if request.method == "POST":
         credential.delete()
