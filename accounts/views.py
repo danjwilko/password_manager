@@ -66,6 +66,7 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
     template_name = "registration/password_reset_confirm.html"
     form_class = SetPasswordForm
+    success_url = reverse_lazy("accounts:password_reset_complete")
 
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
